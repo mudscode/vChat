@@ -2,6 +2,8 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
+// Register a user
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -40,3 +42,45 @@ const register = async (req, res) => {
         res.status(500).json(error);
     }
 };
+
+// User login
+const login = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        const validPassword = await bcrypt.compare(req.body.password, user.password);
+        if (!validPassword) {
+            return res.status(401).json({ message: "Invalid Password" });
+        }
+
+        const token = jwt.sign({
+            id: user._id,
+        },
+            process.env.JWT_KEY,
+            {
+                algorithm: "RS256",
+                expiresIn: "3d"
+            })
+
+        const { password, ...others } = user.toObject();
+        return res.status(200).json(...others, token);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+// User logout
+const logout = async (req, res) => {
+    try {
+        res.status(200).json({ message: "Logged out successfully."});
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+module.exports = { register, login, logout};

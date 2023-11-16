@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 
 const app = express();
 
+// Routes
+const authRoutes = require("./routes/authRoutes.js");
+
 // Mongodb Connection
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -18,6 +21,9 @@ mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
+// Routes Usage
+app.use("/auth", authRoutes);
 
 // Port
 port = process.env.PORT || 5000;
