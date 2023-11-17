@@ -39,7 +39,7 @@ const register = async (req, res) => {
         const user = await newUser.save();
         return res.status(201).json(user);
     } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -77,7 +77,7 @@ const login = async (req, res) => {
             token
         });
     } catch (error) {
-        res.status(500).json({ error: error.message || "Internal Server Error" });
+        res.status(500).json({ error: error.message });
     }
 }
 
@@ -86,7 +86,7 @@ const logout = async (req, res) => {
     try {
         res.status(200).json({ message: "Logged out successfully." });
     } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ error: error.message });
     }
 }
 

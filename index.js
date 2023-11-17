@@ -6,6 +6,7 @@ const app = express();
 
 // Routes
 const authRoutes = require("./routes/authRoutes.js");
+const userRoutes = require("./routes/userRoutes.js");
 
 // Mongodb Connection
 mongoose
@@ -24,6 +25,7 @@ app.use(express.static("public"));
 
 // Routes Usage
 app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 
 // Port
 port = process.env.PORT || 5000;
