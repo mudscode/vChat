@@ -3,7 +3,7 @@
 
 const socketIO = require("socket.io");
 
-const sendMessage = require("../controllers/messageController.js");
+const { sendMessage } = require("../controllers/messageController.js");
 
 function initializeScoket(server) {
   const io = socketIO(server);
@@ -13,18 +13,42 @@ function initializeScoket(server) {
 
     socket.on("disconnect", () => {
       console.log("Client disconnected.");
+    });
 
-      socket.on("chat", async (data) => {
-        const { senderId, receiverId, messageContent } = data;
+    socket.on("chat", async (data) => {
+      const {
+        senderId,
+        receiverId,
+        messageContent,
+        conversationId,
+        isGroupMessage,
+        groupChatId,
+        attachments,
+      } = data;
 
-        try {
-          await sendMessage(io, senderId, receiverId, messageContent);
-          io.emit("chat", { senderId, receiverId, messageContent });
-          io.emit("chat", message);
-        } catch (error) {
-          console.log(error.message);
-        }
-      });
+      try {
+        await sendMessage(
+          io,
+          senderId,
+          receiverId,
+          messageContent,
+          conversationId,
+          isGroupMessage,
+          groupChatId,
+          attachments
+        );
+        io.to(receiverId).emit("chat", {
+          senderId,
+          receiverId,
+          messageContent,
+          conversationId,
+          isGroupMessage,
+          groupChatId,
+          attachments,
+        });
+      } catch (error) {
+        console.log(error.message);
+      }
     });
   });
 

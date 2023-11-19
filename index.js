@@ -1,17 +1,12 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
 const mongoose = require("mongoose");
-const morgan = require("morgan");
+const logger = require("morgan");
 const http = require("http");
 const socketConfig = require("./middlewares/socketConfig.js");
-
 const app = express();
 const server = http.createServer(app);
-const io = socketConfig(server)
-
-// Routes
-const authRoutes = require("./routes/authRoutes.js");
-const userRoutes = require("./routes/userRoutes.js");
+const io = socketConfig(server);
 
 // Mongodb Connection
 mongoose
@@ -27,14 +22,21 @@ mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
-app.use(morgan("dev"));
+app.use(logger("dev"));
+
+// Routes
+const authRoutes = require("./routes/authRoutes.js");
+const userRoutes = require("./routes/userRoutes.js");
+const messageRoutes = require("./routes/messageRoutes.js");
 
 // Routes Usage
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+app.use("/messages", messageRoutes);
 
 // Port
 port = process.env.PORT || 5000;
+
 // Server
 server.listen(port, () => {
   console.log(`Listening on port ${port}`);
