@@ -3,7 +3,7 @@ const router = require("express").Router();
 const { updateUser, getUser, deleteUser } = require("../controllers/userController.js");
 
 // Update a user
-router.post("/:id", authenticateToken, authorizeUser, updateUser);
+router.put("/:id", authenticateToken, authorizeUser, updateUser);
 
 // Delete a user
 router.delete("/:id", authenticateToken, authorizeUser, deleteUser);
