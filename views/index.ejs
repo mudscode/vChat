@@ -1,0 +1,28 @@
+<!-- send-message.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Send Message</title>
+</head>
+<body>
+  <h1>Send a Message</h1>
+  
+  <form action="/messages/send-msg" method="POST" enctype="multipart/form-data">
+    <label for="senderId">Sender ID:</label>
+    <input type="text" id="senderId" name="senderId" required><br><br>
+    
+    <label for="receiverId">Receiver ID:</label>
+    <input type="text" id="receiverId" name="receiverId" required><br><br>
+    
+    <label for="messageContent">Message:</label>
+    <textarea id="messageContent" name="messageContent" required></textarea><br><br>
+    
+    <label for="files">Attach Files (up to 3):</label>
+    <input type="file" id="files" name="files" multiple accept=".jpg, .jpeg, .png"><br><br>
+    
+    <input type="submit" value="Send Message">
+  </form>
+</body>
+</html>

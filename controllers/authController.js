@@ -66,7 +66,7 @@ const login = async (req, res) => {
       },
       process.env.JWT_KEY,
       {
-        expiresIn: "3d",
+        expiresIn: "8d",
       }
     );
     const { _id, username, avatar, bio, groups } = user.toObject();

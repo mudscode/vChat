@@ -3,20 +3,28 @@ const dotenv = require("dotenv").config();
 const mongoose = require("mongoose");
 const logger = require("morgan");
 const http = require("http");
+const ejs = require("ejs");
+const cors = require("cors");
 const socketConfig = require("./middlewares/socketConfig.js");
 const app = express();
 const server = http.createServer(app);
-const io = socketConfig(server);
+const io = socketConfig(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 // Mongodb Connection
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
-    console.log("Connected");
+    console.log("Mongodb Connected");
   })
   .catch((error) => {
     console.log(`An error occured ${error}`);
   });
+
+app.set("view engine", "ejs");
 
 // Middleware
 app.use(express.json());

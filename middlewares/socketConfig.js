@@ -3,56 +3,20 @@
 
 const socketIO = require("socket.io");
 
-const { sendMessage } = require("../controllers/messageController.js");
-
-function initializeScoket(server) {
+function initializeSocket(server) {
   const io = socketIO(server);
 
   io.on("connection", (socket) => {
-    console.log("New client connected.");
-
     socket.on("disconnect", () => {
-      console.log("Client disconnected.");
+      console.log("A user disconnected.");
     });
 
-    socket.on("chat", async (data) => {
-      const {
-        senderId,
-        receiverId,
-        messageContent,
-        conversationId,
-        isGroupMessage,
-        groupChatId,
-        attachments,
-      } = data;
-
-      try {
-        await sendMessage(
-          io,
-          senderId,
-          receiverId,
-          messageContent,
-          conversationId,
-          isGroupMessage,
-          groupChatId,
-          attachments
-        );
-        io.to(receiverId).emit("chat", {
-          senderId,
-          receiverId,
-          messageContent,
-          conversationId,
-          isGroupMessage,
-          groupChatId,
-          attachments,
-        });
-      } catch (error) {
-        console.log(error.message);
-      }
+    socket.on("chat", (newMessage) => {
+      socket.broadcast.emit(newMessage);
     });
   });
 
   return io;
 }
 
-module.exports = initializeScoket;
+module.exports = initializeSocket;

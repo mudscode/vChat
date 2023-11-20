@@ -10,52 +10,23 @@ const {
 const { sendMessage } = require("../controllers/messageController.js");
 
 router.post(
-  "/send-text-msg",
+  "/send-msg",
   authenticateToken,
   authorizeUser,
+  upload.array("files", 3),
   async (req, res) => {
     try {
-      // Call sendMessage for sending a text message
-      await sendMessage(
-        io,
+      const {
         senderId,
         receiverId,
         messageContent,
         conversationId,
         isGroupMessage,
         groupChatId,
-        []
-      );
+      } = req.body;
+      const files = req.files || [];
 
-      res
-        .status(200)
-        .json({ success: true, message: "Text message sent successfully." });
-    } catch (error) {
-      res.status(500).json({ success: false, error: error.message });
-    }
-  }
-);
-
-router.post(
-  "/send-msg-with-attachements",
-  authenticateToken,
-  authorizeUser,
-  upload.array("files", 5),
-  async (req, res) => {
-    const {
-      senderId,
-      receiverId,
-      messageContent,
-      conversationId,
-      isGroupMessage,
-      groupChatId,
-    } = req.body;
-    const files = req.files; // Access uploaded files from multer
-
-    try {
-      // Call sendMessage for sending a message with attachments
       await sendMessage(
-        io,
         senderId,
         receiverId,
         messageContent,
@@ -65,12 +36,9 @@ router.post(
         files
       );
 
-      res.status(200).json({
-        success: true,
-        message: "Message with attachments sent successfully.",
-      });
+      res.status(200).json({ message: "Message Sent Successfully." });
     } catch (error) {
-      res.status(500).json({ success: false, error: error.message });
+      res.status(500).json(error.message);
     }
   }
 );
