@@ -24,23 +24,22 @@ mongoose
     console.log(`An error occured ${error}`);
   });
 
-app.set("view engine", "ejs");
-
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
 app.use(logger("dev"));
 
 // Routes
 const authRoutes = require("./routes/authRoutes.js");
 const userRoutes = require("./routes/userRoutes.js");
 const messageRoutes = require("./routes/messageRoutes.js");
+const groupRoutes = require("./routes/groupRoutes.js");
 
 // Routes Usage
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/messages", messageRoutes);
+app.use("/groups", groupRoutes);
 
 // Port
 port = process.env.PORT || 5000;
