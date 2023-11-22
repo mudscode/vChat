@@ -3,7 +3,25 @@
 const Message = require("../models/Message");
 const User = require("../models/User");
 const Group = require("../models/Group");
-const initializeScoket = require("../middlewares/socketConfig");
+const initializeSocket = require("../middlewares/socketConfig");
+
+const io = initializeSocket();
+
+const TypingStatus = (senderId, receiverId) => {
+  io.to(receiverId).emit("typing", { senderId });
+};
+
+const stoppedTypingStatus = (receiverId) => {
+  io.to(receiverId).emit("stoppedTyping");
+};
+
+const groupTypingStatus = (groupChatId, senderId) => {
+  io.to(groupChatId).emit("groupTyping", { senderId });
+};
+
+const stoppedGroupTypingStatus = (groupChatId) => {
+  io.to(groupChatId).emit("stoppedGroupTyping");
+};
 
 const sendMessage = async (
   senderId,
@@ -17,6 +35,12 @@ const sendMessage = async (
   try {
     const sender = await User.findById(senderId);
     let receivers = [];
+
+    if (!isGroupMessage) {
+      TypingStatus(senderId, receiverId);
+    } else {
+      groupTypingStatus(senderId, groupChatId);
+    }
 
     if (isGroupMessage) {
       const group = await Group.findById(groupChatId);
@@ -50,6 +74,12 @@ const sendMessage = async (
 
     await Message.insertMany(newMessages);
 
+    if (!isGroupMessage) {
+      stoppedTypingStatus(receiverId);
+    } else {
+      stoppedGroupTypingStatus(groupChatId);
+    }
+
     emitNewMessages(receivers, newMessages);
   } catch (error) {
     console.log(error.message);
@@ -80,8 +110,6 @@ const createMessages = (
 };
 
 const emitNewMessages = (receivers, newMessages) => {
-  const io = initializeScoket();
-
   receivers.forEach((receiver) => {
     const messageForReceiver = newMessages.find((msg) => {
       msg.receiverId.toString() === receiver._id.toString();
@@ -92,4 +120,10 @@ const emitNewMessages = (receivers, newMessages) => {
   });
 };
 
-module.exports = { sendMessage };
+module.exports = {
+  sendMessage,
+  TypingStatus,
+  stoppedTypingStatus,
+  groupTypingStatus,
+  stoppedGroupTypingStatus,
+};
