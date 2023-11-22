@@ -1,3 +1,4 @@
+// groupController.js
 const Group = require("../models/Group.js");
 const User = require("../models/User.js");
 const Message = require("../models/Message.js");
