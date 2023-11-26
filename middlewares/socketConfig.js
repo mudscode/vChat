@@ -12,9 +12,9 @@ function initializeSocket(server) {
     });
 
     socket.on("chat", (newMessage) => {
-      if(newMessage.receiverId){
+      if (newMessage.receiverId) {
         socket.to(newMessage.receiverId).emit("chat", newMessage);
-      } else if(newMessage.groupChatId){
+      } else if (newMessage.groupChatId) {
         socket.to(newMessage.groupChatId).emit("chat", newMessage);
       }
     });
@@ -23,7 +23,7 @@ function initializeSocket(server) {
       socket.to(data.receiverId).emit("typing", data);
     });
 
-    socket.on("stoppedTyping", () => {
+    socket.on("stoppedTyping", (data) => {
       socket.to(data.receiverId).emit("stoppedTyping");
     });
 
@@ -31,10 +31,9 @@ function initializeSocket(server) {
       socket.to(data.groupChatId).emit("groupTyping", data);
     });
 
-    socket.on("stoppedGroupTyping", () => {
+    socket.on("stoppedGroupTyping", (data) => {
       socket.to(data.groupChatId).emit("stoppedGroupTyping");
     });
-
   });
 
   return io;

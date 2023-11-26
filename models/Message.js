@@ -16,10 +16,6 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    readBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
     status: {
       type: String,
       enum: ["sent", "delivered", "read"],
@@ -30,10 +26,6 @@ const messageSchema = new mongoose.Schema(
       enum: ["text", "file"],
       default: "text",
     },
-    conversationId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-    },
     isGroupMessage: {
       type: Boolean,
       default: false,
@@ -42,7 +34,7 @@ const messageSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Group",
     },
-    attachements: [
+    attachments: [
       {
         type: String,
       },
