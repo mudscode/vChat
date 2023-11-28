@@ -96,7 +96,6 @@ const createMessages = (
     senderId: sender._id,
     receiverId: receiver._id,
     content: messageContent,
-    status: "sent",
     type: "text",
     isGroupMessage: isGroupMessage,
     groupChatId: groupChatId,
